@@ -1,0 +1,152 @@
+body{
+  background: #fff;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+h1{
+  color: #212529;
+  font-family: Helvetica,"Helvetica Neue",Arial,sans-serif,"websafe";
+  font-size: 40px;
+}
+
+#side{
+  background: #f2f2f2;
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 250px;
+  height: 100%;
+  padding: 20px 15px;
+}
+
+#logo{
+  margin: 30px auto;
+  width: 210px;
+  height: 82px;
+  background: url(./image.png);
+}
+
+#sidedummy{
+  margin: 30px auto;
+  width: 210px;
+  height: 234px;
+  background: url(./side.png);
+}
+
+#main{
+  padding: 50px 20px;
+  position: relative;
+  top: 0;
+  left: 280px;
+  bottom: 0;
+  right: 0;
+}
+
+#bgm{
+  display: block;
+  margin: 30px auto;
+  width: 210px;
+}
+
+#volbox{
+  display: block;
+  margin: 30px auto;
+  width: 210px;
+}
+
+#contents{
+  width: 100%;
+  height: 100%;
+}
+
+.small{
+  width: 40px;
+  height: 40px;
+}
+.big{
+  width: 240px;
+  height: 240px;
+}
+.circle{
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  flex-flow: column;
+  vertical-align: top;
+  border-width: 20%;
+  border-style: solid;
+}
+.dike{
+  border-bottom: solid orange;
+  border-left: solid transparent;
+  border-right: solid transparent;
+  text-align: center;
+  height: 0;
+}
+.dike.big{
+  border-bottom-width: 150px;
+  border-left-width: 48px;
+  border-right-width: 48px;
+}
+.dike.small{
+  border-bottom-width: 25px;
+  border-left-width: 8px;
+  border-right-width: 8px;
+}
+.small .inner{
+  font-size: 20px;
+}
+.big .inner{
+  font-size: 80px;
+}
+.dike .inner{
+  padding-top: 10%;
+}
+
+.c1.circle{
+  border-color: Crimson;
+}
+.c2.circle{
+  border-color: Teal;
+}
+.c3.circle{
+  border-color: Indigo;
+}
+.c4.circle{
+  border-color: Olive;
+}
+.c5.circle{
+  border-color: Silver;
+}
+
+.cntp{
+  max-width: 50%;
+  margin: 0 auto;
+  vertical-align: middle;
+}
+
+#ctrl{
+  width: 100%;
+  height: 100%;
+}
+
+#start{
+  position: fixed;
+  top: 70%;
+}
+
+#center div.circle{
+  margin: auto calc(50% - 123px);
+}
+#center div.dike{
+  margin: auto calc(50% - 158px);
+  margin-top: 20px;
+}
+
+#bomb{
+  max-width: 100%;
+  visibility: hidden;
+}
