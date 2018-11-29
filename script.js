@@ -1,11 +1,11 @@
 let lmin = 1, lmax = 50;//最小値，最大値
-let ddikebomb = 0.2;//    土堤が飛ぶ割合
-let lrow = 8;//           結果一行の数
+let ddikebomb = 0.5;//    土堤が飛ぶ割合
+let lrow = 10;//           結果一行の数
 
 
 
 let bgm;
-let se_bomb, se_flash, se_drum;
+let se_bomb, se_flash, se_drum, se_fall;
 let center;
 let dvol;
 let dbombalpha;
@@ -19,6 +19,7 @@ let ctrl, fg_ctrl;
 let ldik;
 let bomb;
 let maintbl;
+let pdspid;
 
 function init(){
   bgm = document.getElementById("bgm");
@@ -28,6 +29,7 @@ function init(){
   se_bomb = document.getElementById("bomb");
   se_drum = document.getElementById("drum");
   se_flash = document.getElementById("flash");
+  se_fall = document.getElementById("fall");
 
   table = document.getElementById("table");
   lres = [];
@@ -46,6 +48,8 @@ function init(){
 
   document.getElementById("pdike").value = ddikebomb;
   document.getElementById("prow").value = lrow;
+  pdspid = document.getElementById("pdspid");
+  pdspid.value = 0;
 }
 
 function changepropaty(txt){
@@ -53,6 +57,8 @@ function changepropaty(txt){
     ddikebomb = document.getElementById("pdike").value;
   }else if(txt == 'row'){
     lrow = document.getElementById("prow").value;
+  }else if(txt == 'dspid'){
+    ldspid = pdspid.value;
   }
 }
 
@@ -61,6 +67,14 @@ function fadein(){
     dvol++;
     bgm.volume = dvol*0.1;
     setTimeout(fadein,50);
+  }else{
+    ldspid = 0;
+    pdspid.value = ldspid;
+    if(lres.length >= (lmax-lmin+1)){
+      alert("試合終了！");
+      ldspid = 1;
+      pdspid.value = ldspid;
+    }
   }
 }
 
@@ -107,7 +121,6 @@ function add(i){
   }
   setTimeout(fadein, 3000);
   se_flash.play();
-  ldspid = 0;
 }
 
 function getMark(i,size){
@@ -126,6 +139,7 @@ function primeNumber(num){
 function onStartBtn(){
   if(ldspid == 0){
     ldspid = setInterval(disp,150);
+    pdspid.value = ldspid;
     setTimeout(bingo,Math.floor(3000+5000*Math.random()));
     fadeout();
     se_drum.play();
@@ -137,14 +151,19 @@ function disp(){
 function bingo(){
   let ires, fg_ok;
   let fg_loop;
-  let i, len;
+  let i, len, ilen;
   clearInterval(ldspid);
   se_drum.pause();
   se_drum.currentTime = 0;
+  len=lres.length;
   do{
     ires = Math.floor(Math.random()*(lmax+1-lmin)) + lmin;
     fg_loop = false
-    len=lres.length;
+    if(len<2){
+      if(primeNumber(ires)){
+        continue;
+      }
+    }
     for(i=0; i<len; i++){
       if(lres[i] == ires){
         fg_loop = true;
@@ -177,6 +196,7 @@ function bingodike2(){
     add(ldik);
   }else{
     maintbl.setAttribute("data-out", "out");
+    se_fall.play();
     setTimeout(bingodike3, 2000);
   }
 }
@@ -190,6 +210,11 @@ function bingodike3(){
     ires = Math.floor(Math.random()*(lmax+1-lmin)) + lmin;
     fg_loop = false
     len=lres.length;
+    if(!primeNumber(ires)){
+      if(Math.random()<0.7){
+        continue;
+      }
+    }
     for(i=0; i<len; i++){
       if(lres[i] == ires){
         fg_loop = true;

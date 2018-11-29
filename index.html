@@ -31,8 +31,14 @@
           <source src="bomb.ogg">
           <source src="bomb.mp3">
         </audio>
+        <audio id="fall">
+          <source src="fall.ogg">
+          <source src="fall.mp3">
+        </audio>
         <tt>
+          最大値および最小値はscript.jsを直接編集し，再読込後に反映<br>
           衝撃波低減失敗率：<input type="number" step="0.1" min="0" max="1" id="pdike" onchange="changepropaty('dike');"><br>
+          　　　続行フラグ：<input type="number" step="1" min="0" id="pdspid" onchange="changepropaty('dspid');"><br>
           　　　　結果表示：<input type="number" step="1" min="0" id="prow" onchange="changepropaty('row');">行<br>
         </tt>
       </div>
@@ -45,7 +51,7 @@
       <table width='70%' id="maintbl">
         <tr>
           <td width='30%' id='left'><img src='bomb.png' id='bombimg'></td>
-          <td width='40%' id='center'>NaN</td>
+          <td width='40%' id='center'>スタートボタンをおしてね！</td>
           <td width='30%' id='right'></td>
         </tr>
       </table>
