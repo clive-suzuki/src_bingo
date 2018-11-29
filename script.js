@@ -1,14 +1,14 @@
 let lmin = 1, lmax = 50;//最小値，最大値
+let ddikebomb = 0.2;//    土堤が飛ぶ割合
+let lrow = 8;//           結果一行の数
 
 
 
-
-
-
-let vol;
 let bgm;
+let se_bomb, se_flash, se_drum;
 let center;
-let dvol, dvolmax;
+let dvol;
+let dbombalpha;
 let lres;
 let table;
 let colors = ['c1','c2','c3','c4','c5'];
@@ -18,14 +18,16 @@ let lprmnum = lprm.length
 let ctrl, fg_ctrl;
 let ldik;
 let bomb;
+let maintbl;
 
 function init(){
   bgm = document.getElementById("bgm");
-  vol = document.getElementById("vol");
-  dvolmax = 1.0;
-  dvol = 1.0;
-  vol.value=1.0;
+  dbombalpha = 0
+  dvol = 10;
   bgm.play();
+  se_bomb = document.getElementById("bomb");
+  se_drum = document.getElementById("drum");
+  se_flash = document.getElementById("flash");
 
   table = document.getElementById("table");
   lres = [];
@@ -38,55 +40,74 @@ function init(){
   ctrl.style.display = "none";
   fg_ctrl = false;
 
-  bomb = document.getElementById("bomb");
+  bomb = document.getElementById("bombimg");
+
+  maintbl = document.getElementById("maintbl");
+
+  document.getElementById("pdike").value = ddikebomb;
+  document.getElementById("prow").value = lrow;
 }
 
-function onVolBox(){
-  dvolmax = vol.value;
+function changepropaty(txt){
+  if(txt == 'dike'){
+    ddikebomb = document.getElementById("pdike").value;
+  }else if(txt == 'row'){
+    lrow = document.getElementById("prow").value;
+  }
 }
 
 function fadein(){
-  if (dvol < 1.0){
-    dvol = Math.ceil((dvol+0.1)*10)/10;
-    bgm.volume = dvol * dvolmax;
-    setTimeout(fadein,200);
+  if (dvol <= 9){
+    dvol++;
+    bgm.volume = dvol*0.1;
+    setTimeout(fadein,50);
   }
 }
 
 function fadeout(){
-  var vl = bgm.volume;
-  if (vl > 0.0){
-    dvol = Math.ceil((dvol-0.1)*10)/10;
-    bgm.volume = dvol * dvolmax;
-    setTimeout(fadeout,200);
+  if (dvol >= 2){
+    dvol--;
+    bgm.volume = dvol*0.1;
+    setTimeout(fadeout,50);
+  }
+}
+function imgalpha(){
+  bombimg.style.filter = "alpha(opacity:" + dbombalpha*10 + ")";
+  bombimg.style.opacity = dbombalpha*0.1;
+}
+function imgfadeout(){
+  if (dbombalpha >= 1){
+    dbombalpha--;
+    imgalpha();
+    setTimeout(imgfadeout, 200);
   }
 }
 
 function add(i){
   let len;
-  let j,k;
+  let j,k,l;
   let jmax, kmax, jj;
-  fadein();
   lres.push(i);
   len = table.rows.length;
   for(k=0; k<len; k++){
-    table.deleteRow(k);
+    table.deleteRow(0);
   }
   len = lres.length;
-  jmax = (len-1) % 5 + 1;
-  kmax = Math.floor((len-1)/5) + 1;
+  jmax = (len-1) % lrow + 1;
+  kmax = Math.floor((len-1)/lrow) + 1;
   for(k=0; k<kmax; k++){
     table.insertRow(-1);
-    table.rows[k].insertCell(-1);
-    table.rows[k].insertCell(-1);
-    table.rows[k].insertCell(-1);
-    table.rows[k].insertCell(-1);
-    table.rows[k].insertCell(-1);
-    jj = (k == kmax-1)? jmax: 5;
+    for(l=0; l<lrow; l++){
+      table.rows[k].insertCell(-1);
+    }
+    jj = (k == kmax-1)? jmax: lrow;
     for(j=0; j<jj; j++){
-      table.rows[k].cells[j].innerHTML = getMark(lres[5*k+j], 'small');
+      table.rows[k].cells[j].innerHTML = getMark(lres[lrow*k+j], 'small');
     }
   }
+  setTimeout(fadein, 3000);
+  se_flash.play();
+  ldspid = 0;
 }
 
 function getMark(i,size){
@@ -107,16 +128,19 @@ function onStartBtn(){
     ldspid = setInterval(disp,150);
     setTimeout(bingo,Math.floor(3000+5000*Math.random()));
     fadeout();
+    se_drum.play();
   }
 }
 function disp(){
   center.innerHTML = getMark(ldsp, 'big');
 }
 function bingo(){
-  clearInterval(ldspid);
   let ires, fg_ok;
   let fg_loop;
   let i, len;
+  clearInterval(ldspid);
+  se_drum.pause();
+  se_drum.currentTime = 0;
   do{
     ires = Math.floor(Math.random()*(lmax+1-lmin)) + lmin;
     fg_loop = false
@@ -133,7 +157,6 @@ function bingo(){
     setTimeout(bingodike1, 1000);
   }else{
     add(ires);
-    ldspid = 0;
   }
 }
 
@@ -142,10 +165,41 @@ exp-> futtobu
 */
 function bingodike1(){
   bomb.style.visibility = 'visible';
-
+  se_bomb.play();
+  setTimeout(bingodike2, 4000);
+  dbombalpha = 10;
+  imgalpha();
+  imgfadeout();
 }
 
+function bingodike2(){
+  if(Math.random() > ddikebomb){
+    add(ldik);
+  }else{
+    maintbl.setAttribute("data-out", "out");
+    setTimeout(bingodike3, 2000);
+  }
+}
 
+function bingodike3(){
+  let ires;
+  let fg_loop;
+  let len;
+  let i;
+  do{
+    ires = Math.floor(Math.random()*(lmax+1-lmin)) + lmin;
+    fg_loop = false
+    len=lres.length;
+    for(i=0; i<len; i++){
+      if(lres[i] == ires){
+        fg_loop = true;
+      }
+    }
+  }while(fg_loop);
+  center.innerHTML = getMark(ires, 'big');
+  maintbl.removeAttribute("data-out");
+  add(ires);
+}
 
 function dspLoop(){
   ldsp = Math.floor(Math.random()*(lmax+1-lmin)) + lmin;
