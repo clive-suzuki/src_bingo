@@ -20,6 +20,8 @@ let ldik;
 let bomb;
 let maintbl;
 let pdspid;
+let pshfl, lshfl;
+let stopbtn;
 
 function init(){
   bgm = document.getElementById("bgm");
@@ -46,10 +48,15 @@ function init(){
 
   maintbl = document.getElementById("maintbl");
 
+  stopbtn = document.getElementById("stop");
+
   document.getElementById("pdike").value = ddikebomb;
   document.getElementById("prow").value = lrow;
   pdspid = document.getElementById("pdspid");
   pdspid.value = 0;
+  pshfl = document.getElementById("pshfl");
+  lshfl = 0;
+  pshfl.selectedIndex = lshfl;
 }
 
 function changepropaty(txt){
@@ -59,6 +66,13 @@ function changepropaty(txt){
     lrow = document.getElementById("prow").value;
   }else if(txt == 'dspid'){
     ldspid = pdspid.value;
+  }else if(txt == 'shfl'){
+    lshfl = pshfl.selectedIndex;
+    if(lshfl == 0){
+      stopbtn.style.visibility = 'hidden';
+    }else if(lshfl == 1){
+      stopbtn.style.visibility = 'visible';
+    }
   }
 }
 
@@ -67,14 +81,16 @@ function fadein(){
     dvol++;
     bgm.volume = dvol*0.1;
     setTimeout(fadein,50);
-  }else{
-    ldspid = 0;
+  }
+}
+
+function ready(){
+  ldspid = 0;
+  pdspid.value = ldspid;
+  if(lres.length >= (lmax-lmin+1)){
+    alert("試合終了！");
+    ldspid = 1;
     pdspid.value = ldspid;
-    if(lres.length >= (lmax-lmin+1)){
-      alert("試合終了！");
-      ldspid = 1;
-      pdspid.value = ldspid;
-    }
   }
 }
 
@@ -101,6 +117,9 @@ function add(i){
   let len;
   let j,k,l;
   let jmax, kmax, jj;
+  if((i<lmin) || (i>lmax)){
+    return;
+  }
   lres.push(i);
   len = table.rows.length;
   for(k=0; k<len; k++){
@@ -119,7 +138,8 @@ function add(i){
       table.rows[k].cells[j].innerHTML = getMark(lres[lrow*k+j], 'small');
     }
   }
-  setTimeout(fadein, 3000);
+  setTimeout(fadein, 2000);
+  setTimeout(ready, 2600);
   se_flash.play();
 }
 
@@ -138,13 +158,21 @@ function primeNumber(num){
 
 function onStartBtn(){
   if(ldspid == 0){
+    ldspid = 1
     ldspid = setInterval(disp,150);
     pdspid.value = ldspid;
-    setTimeout(bingo,Math.floor(3000+5000*Math.random()));
+    if(lshfl == 0){
+      setTimeout(bingo,Math.floor(3000+5000*Math.random()));
+    }
     fadeout();
     se_drum.play();
   }
 }
+
+function onStopBtn(){
+  bingo();
+}
+
 function disp(){
   center.innerHTML = getMark(ldsp, 'big');
 }
@@ -161,6 +189,7 @@ function bingo(){
     fg_loop = false
     if(len<2){
       if(primeNumber(ires)){
+        fg_loop = true;
         continue;
       }
     }
@@ -194,7 +223,9 @@ function bingodike1(){
 function bingodike2(){
   if(Math.random() > ddikebomb){
     add(ldik);
+    ldik = lmin-1;
   }else{
+    ldik = lmin-1;
     maintbl.setAttribute("data-out", "out");
     se_fall.play();
     setTimeout(bingodike3, 2000);
@@ -211,7 +242,8 @@ function bingodike3(){
     fg_loop = false
     len=lres.length;
     if(!primeNumber(ires)){
-      if(Math.random()<0.7){
+      if(Math.random()<0.9){
+        fg_loop = true;
         continue;
       }
     }

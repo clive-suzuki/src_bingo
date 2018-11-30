@@ -11,6 +11,10 @@ h1{
   font-size: 40px;
 }
 
+select{
+  vertical-align:top;
+}
+
 #side{
   background: #f2f2f2;
   top: 0;
@@ -19,6 +23,15 @@ h1{
   width: 250px;
   height: 100%;
   padding: 20px 15px;
+}
+
+#start{
+  margin: 20px;
+}
+
+#stop{
+  margin: 20px;
+  visibility: hidden;
 }
 
 #logo{

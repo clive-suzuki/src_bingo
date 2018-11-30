@@ -13,7 +13,8 @@
   </div>
   <div id="main">
     <div id="topbar">
-      <button onclick="onStartBtn();" id="start">スタート！</button>
+      <button onclick="onStartBtn();" id="start">　スタート！　</button>
+      <button onclick="onStopBtn();" id="stop">　ストップ！　</button>
       <div id="ctrl">
         <audio id="bgm" controls loop>
           <source src="bgm.ogg">
@@ -40,6 +41,11 @@
           衝撃波低減失敗率：<input type="number" step="0.1" min="0" max="1" id="pdike" onchange="changepropaty('dike');"><br>
           　　　続行フラグ：<input type="number" step="1" min="0" id="pdspid" onchange="changepropaty('dspid');"><br>
           　　　　結果表示：<input type="number" step="1" min="0" id="prow" onchange="changepropaty('row');">行<br>
+          　シャッフル時間：
+          <select id="pshfl" size="2" onchange="changepropaty('shfl');">
+            <option>ランダム</option>
+            <option>マニュアル</option>
+          </select>
         </tt>
       </div>
     </div>
